@@ -14,7 +14,7 @@ def wait_for_batch(data_index,batch_size,time_stamp_list, batch_time=60):
 def request_completion(api_key, prompt, engine, max_tokens, temperature=0, top_p=1, frequency_penalty=0, presence_penalty=0):
     openai.api_key = api_key
     response = openai.Completion.create(
-        engine="code-davinci-002",
+        engine=engine,
         prompt=prompt,
         max_tokens=max_tokens,
         temperature=temperature,

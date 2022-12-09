@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+data/scicite/scaffolds/cite-worthiness-scaffold-train.jsonl
+playground.ipynb
+data/scicite/scaffolds/sections-scaffold-train.jsonl
+openai_api.txt
+log.txt

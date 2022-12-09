@@ -18,7 +18,7 @@ def get_args():
 
 if __name__ == "__main__":
     # experiment settings
-    batch_size = 10
+    batch_size = 8
     args = get_args()
     k_shot = args.k_shot
     prompt_name = args.prompt_name
@@ -39,7 +39,7 @@ if __name__ == "__main__":
             if i < number_of_line:
                 continue
             time_stamps.append(time.time())
-            wait_for_batch(i, batch_size, time_stamps, batch_time=35)
+            wait_for_batch(i, batch_size, time_stamps, batch_time=30)
             rtn = {}
             response = request_completion(api_key, example['string'], 'code-cushman-001', 5, top_p=0.3)
             # time finished the ith example
@@ -49,3 +49,4 @@ if __name__ == "__main__":
             rtn['label'] = example['label']
             rtn['generation'] = generation
             f.write(json.dumps(rtn)+'\n')
+            time.sleep(1)
