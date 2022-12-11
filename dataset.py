@@ -12,16 +12,17 @@ class SciDataset(Dataset):
     
     def get_k_shot_context(self, data_path):
         if self.k_shot>0:
-            assert k_shot // len(label_space) == 0, "k_shot should be a multiple of the number of classes"
-            k_shot_labels = label_space
-            for i in range(1,k_shot+1):
-                k_shot_labels+=label_space
+            assert self.k_shot % len(self.label_space) == 0, f"k_shot={self.k_shot} should be a multiple of the number of classes={self.label_space}"
+            k_shot_labels = []
+            for i in range(1,self.k_shot//len(self.label_space)+1):
+                k_shot_labels+=self.label_space
             k_shot_context = []
             with open(data_path, "rb") as f:
                 for line in f.readlines():
                     data = json.loads(line)
                     if data['label'] == k_shot_labels[0]:
-                        k_shot_context.append(self.input2prompt(data))
+                        part_a, part_b = self.input2prompt(data)
+                        k_shot_context.append(part_a+part_b)
                         k_shot_labels = k_shot_labels[1:]
                     else:
                         continue
@@ -35,9 +36,9 @@ class SciDataset(Dataset):
         examples = []
         for instance in self.raw_data:
             example = {'id': instance['id'], 'label': instance['label']}
-            prompted_instance = self.input2prompt(instance)
+            part_a, part_b = self.input2prompt(instance)
             if self.prompt_name == 'json':
-                prompted_instance = prompted_instance[:-2]
+                prompted_instance = part_a+part_b[:-2]#prompted_instance[:-2]
             if self.k_shot>0:
                 example['string'] = self.k_shot_context+'\n'+prompted_instance
             else:
@@ -64,9 +65,12 @@ class SciDataset(Dataset):
         # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
         # rtn['question'] = f"What is the citation purpose of {cited_string} in the text above?"
         rtn['question'] = "What is the citation purpose of the text above?"
-        rtn['answer'] = ''
+        rtn['answer'] = instance['label']
         rtn = json.dumps(rtn, sort_keys=False)
-        return rtn
+
+        part_b = '"'+instance['label']+'"}'
+        part_a = rtn[:-len(part_b)]
+        return part_a, part_b
     def __getitem__(self, idx):
         return self.examples[idx]
     def __len__(self):

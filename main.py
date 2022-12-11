@@ -30,7 +30,7 @@ if __name__ == "__main__":
     # build dataset
     dataset = SciDataset(train_path, test_path, prompt_name, k_shot)
     # get results and write into file
-    results_file_path = f"./results/scicite/prompt_{prompt_name}_shot_{k_shot}_test.jsonl"
+    results_file_path = f"./results/scicite/engine_{engine}_prompt_{prompt_name}_shot_{k_shot}_test.jsonl"
     if os.path.exists(results_file_path):
         number_of_line = sum(1 for line in open(results_file_path))
     else:
@@ -44,6 +44,7 @@ if __name__ == "__main__":
             time_stamps.append(time.time())
             wait_for_batch(i, batch_size, time_stamps, batch_time=30)
             rtn = {}
+            length = len(example['string'])
             response = request_completion(api_key, example['string'], engine, 5, top_p=0.3)
             # time finished the ith example
             time_stamps[-1] = time.time()
