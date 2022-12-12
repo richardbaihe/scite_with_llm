@@ -10,6 +10,7 @@ from tqdm import tqdm
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--k_shot', type=int, default=3)
+    # prompt_name: json, multi_choice, original_json
     parser.add_argument('--prompt_name', type=str, default='json')
     # parser.add_argument('--test_partition', type=int, default=0)
     parser.add_argument('--api_key', type=str, required=True)
@@ -45,6 +46,8 @@ if __name__ == "__main__":
             wait_for_batch(i, batch_size, time_stamps, batch_time=30)
             rtn = {}
             length = len(example['string'])
+            if i == 0:
+                print(example['string'])
             response = request_completion(api_key, example['string'], engine, 5, top_p=0.3)
             # time finished the ith example
             time_stamps[-1] = time.time()
