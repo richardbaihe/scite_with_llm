@@ -1,11 +1,11 @@
-
 import os
 import json
 from dataset import SciDataset
-from utils import request_completion,wait_for_batch
+from utils import request_completion, wait_for_batch
 import argparse
 import time
 from tqdm import tqdm
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -17,6 +17,7 @@ def get_args():
     parser.add_argument('--engine', type=str, default='code-cushman-001')
     args = parser.parse_args()
     return args
+
 
 if __name__ == "__main__":
     # experiment settings    
@@ -36,12 +37,10 @@ if __name__ == "__main__":
         number_of_line = sum(1 for line in open(results_file_path))
     else:
         number_of_line = 0
-    if 'engine_code-cushman-001_prompt_multi_choice_shot_3_test.jsonl' in results_file_path:
-        batch_size = 4
-        
+
     with open(results_file_path, "a") as f:
         time_stamps = []
-        for i, example in tqdm(enumerate(dataset)):
+        for i, example in tqdm(enumerate(dataset), total=len(dataset)):
             if i < number_of_line:
                 continue
             time_stamps.append(time.time())
@@ -50,7 +49,13 @@ if __name__ == "__main__":
             length = len(example['string'])
             if i == 0:
                 print(example['string'])
-            response = request_completion(api_key, example['string'], engine, 5, top_p=0.3)
+            try:
+                response = request_completion(api_key, example['string'], engine, 5, top_p=0.3)
+            except:
+                tqdm.write('openai.error.RateLimitError, wait for 59 seconds')
+                time.sleep(59)
+                response = request_completion(api_key, example['string'], engine, 5, top_p=0.3)
+
             # time finished the ith example
             time_stamps[-1] = time.time()
             generation = response.choices[0]['text']
@@ -58,8 +63,5 @@ if __name__ == "__main__":
             rtn['label'] = example['label']
             rtn['generation'] = generation
             rtn['input_length'] = len(example['string'])
-            f.write(json.dumps(rtn)+'\n')
-            # if 'engine_code-cushman-001_prompt_multi_choice_shot_3_test.jsonl' in results_file_path:
-            #     time.sleep(10)
-            # else:
+            f.write(json.dumps(rtn) + '\n')
             time.sleep(1)
