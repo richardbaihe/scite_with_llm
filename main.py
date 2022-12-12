@@ -57,4 +57,7 @@ if __name__ == "__main__":
             rtn['generation'] = generation
             rtn['input_length'] = len(example['string'])
             f.write(json.dumps(rtn)+'\n')
-            time.sleep(1)
+            if 'engine_code-cushman-001_prompt_multi_choice_shot_3_test.jsonl' in results_file_path:
+                time.sleep(5)
+            else:
+                time.sleep(1)
