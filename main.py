@@ -19,7 +19,7 @@ def get_args():
     return args
 
 if __name__ == "__main__":
-    # experiment settings
+    # experiment settings    
     batch_size = 8
     args = get_args()
     k_shot = args.k_shot
@@ -36,6 +36,8 @@ if __name__ == "__main__":
         number_of_line = sum(1 for line in open(results_file_path))
     else:
         number_of_line = 0
+    if 'engine_code-cushman-001_prompt_multi_choice_shot_3_test.jsonl' in results_file_path:
+        batch_size = 4
         
     with open(results_file_path, "a") as f:
         time_stamps = []
@@ -57,7 +59,7 @@ if __name__ == "__main__":
             rtn['generation'] = generation
             rtn['input_length'] = len(example['string'])
             f.write(json.dumps(rtn)+'\n')
-            if 'engine_code-cushman-001_prompt_multi_choice_shot_3_test.jsonl' in results_file_path:
-                time.sleep(10)
-            else:
-                time.sleep(1)
+            # if 'engine_code-cushman-001_prompt_multi_choice_shot_3_test.jsonl' in results_file_path:
+            #     time.sleep(10)
+            # else:
+            time.sleep(1)
