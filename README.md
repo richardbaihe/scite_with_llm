@@ -11,3 +11,10 @@ First, setup openai-api and get your key: https://beta.openai.com/docs/api-refer
 
 ## Read Results
 There is an example of generation `results/scicite/prompt_json_shot_3_test.jsonl`, whose name means it was evaluated with `json` prompt, and `3` shots.
+
+## Evaluate Results
+Install package  
+`pip install scikit-learn`  
+then run  
+`python eval.py`   
+will evaluate all the result files under `./results/scicite`
