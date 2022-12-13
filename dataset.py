@@ -28,7 +28,7 @@ class SciDataset(Dataset):
         
             part_b = instance['label']+'"}'
             part_a = rtn[:-len(part_b)]
-        if self.prompt_name == 'json_v2':
+        elif self.prompt_name == 'json_v2':
             rtn = {}
             rtn['choices'] = self.label_space
             rtn['text'] = input_string.replace('\n','')

@@ -7,7 +7,7 @@ First, setup openai-api and get your key: https://beta.openai.com/docs/api-refer
 `pip install openai`
 
 ## Get Results
-`python main.py --api_key <YOUR_KEY>`
+`python main.py --api_key <YOUR_KEY> --k_shot 3 --prompt_name json --engine code-cushman-001` 
 
 ## Read Results
 There is an example of generation `results/scicite/prompt_json_shot_3_test.jsonl`, whose name means it was evaluated with `json` prompt, and `3` shots.
