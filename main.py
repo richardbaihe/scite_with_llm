@@ -1,7 +1,7 @@
 import os
 import json
 from dataset import SciDataset
-from utils import request_completion, wait_for_batch
+from utils import request_completion, wait_for_batch, get_generation_from_response_logprob
 import argparse
 import time
 from tqdm import tqdm
@@ -41,12 +41,20 @@ if __name__ == "__main__":
     with open(results_file_path, "a") as f:
         time_stamps = []
         for i, example in tqdm(enumerate(dataset), total=len(dataset)):
+            # skill the line that already requested
             if i < number_of_line:
                 continue
             time_stamps.append(time.time())
+            # process #batch_size examples every #batch_time seconds
             wait_for_batch(i, batch_size, time_stamps, batch_time=30)
             rtn = {}
-            length = len(example['string'])
+
+            if type(example['string']) == list:
+                input_string = example['string'][0]
+            else:
+                input_string = example['string']
+            length = len(input_string)
+            # print an example in log
             if i == 0:
                 print(example['string'])
             try:
@@ -58,10 +66,14 @@ if __name__ == "__main__":
 
             # time finished the ith example
             time_stamps[-1] = time.time()
-            generation = response.choices[0]['text']
+            if 'logprob' in prompt_name:
+                label_string = get_generation_from_response_logprob(response, dataset.label_space, example['logprobs_start_index'], example['logprobs_end_index'])
+                generation = input_string+label_string
+            else:
+                generation = response.choices[0]['text']
             rtn['id'] = example['id']
             rtn['label'] = example['label']
             rtn['generation'] = generation
-            rtn['input_length'] = len(example['string'])
+            rtn['input_length'] = length
             f.write(json.dumps(rtn) + '\n')
             time.sleep(1)

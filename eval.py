@@ -10,7 +10,7 @@ def compute_scores(path):
         for line in f.readlines():
             result = json.loads(line)
             label = result["label"]
-            predict = result["generation"][result["input_length"]:]
+            predict = result["generation"][result["input_length"]:].lower()
             if '"' in predict:
                 predict = predict.split('"')[0]
             else:
