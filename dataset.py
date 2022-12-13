@@ -12,15 +12,28 @@ class SciDataset(Dataset):
 
     def input2prompt(self, instance):
         input_string = instance['string']
-        part_a_list = []
-        part_b_list = []
+        try:
+            cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
+        except:
+            cited_string = 'paper'
         if self.prompt_name == 'json':
             rtn = {}
             rtn['citation purposes'] = self.label_space
             rtn['text'] = input_string
             # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
-            # rtn['question'] = f"What is the citation purpose of {cited_string} in the text above?"
+            # rtn['question'] = f"What is the citation purpose of {cited_string} in text?"
             rtn['question'] = "What is the citation purpose of the text above?"
+            rtn['answer'] = instance['label']
+            rtn = json.dumps(rtn, sort_keys=False)
+        
+            part_b = instance['label']+'"}'
+            part_a = rtn[:-len(part_b)]
+        if self.prompt_name == 'json_v2':
+            rtn = {}
+            rtn['choices'] = self.label_space
+            rtn['text'] = input_string.replace('\n','')
+            # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
+            rtn['question'] = f"What is the citation purpose of {cited_string} in text?"
             rtn['answer'] = instance['label']
             rtn = json.dumps(rtn, sort_keys=False)
         
