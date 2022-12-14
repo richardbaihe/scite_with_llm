@@ -74,10 +74,24 @@ class SciDataset(Dataset):
                 part_b = f"{input_string}".replace('\n', ' ')
                 part_a_list.append(part_a)
                 part_b_list.append(part_b)
-        elif self.promt_name == 'mcq_style_logprobs':
+        elif self.prompt_name == 'mcq_style_logprobs':
             for label in self.label_space:
                 part_a = f"Text: {input_string} Q: what is the citation purpose of the text above? Background, result, or method? A: "
                 part_b = instance['label']
+                part_a_list.append(part_a)
+                part_b_list.append(part_b)
+        elif self.prompt_name == 'json_logprobs':
+            for label in self.label_space:
+                rtn = {}
+                rtn['choices'] = self.label_space
+                rtn['text'] = input_string.replace('\n','')
+                # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
+                rtn['question'] = f"What is the citation purpose of {cited_string} in text?"
+                rtn['answer'] = instance['label']
+                rtn = json.dumps(rtn, sort_keys=False)
+            
+                part_b = label+'"}'
+                part_a = rtn[:-len(part_b)]
                 part_a_list.append(part_a)
                 part_b_list.append(part_b)
         else:
