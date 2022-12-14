@@ -39,6 +39,17 @@ class SciDataset(Dataset):
         
             part_b = instance['label']+'"}'
             part_a = rtn[:-len(part_b)]
+        elif self.prompt_name == 'json_v3':
+            rtn = {}
+            rtn['choices'] = self.label_space
+            rtn['text'] = input_string.replace('\n','')
+            # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
+            rtn['question'] = f"What is the citation purpose of the text above?"
+            rtn['answer'] = instance['label']
+            rtn = json.dumps(rtn, sort_keys=False)
+        
+            part_b = instance['label']+'"}'
+            part_a = rtn[:-len(part_b)]
         elif self.prompt_name == 'original_json':
             rtn = {}
             rtn['string'] = instance['string']
@@ -84,9 +95,9 @@ class SciDataset(Dataset):
             for label in self.label_space:
                 rtn = {}
                 rtn['choices'] = self.label_space
-                rtn['text'] = input_string.replace('\n','')
+                rtn['text'] = input_string#.replace('\n','')
                 # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
-                rtn['question'] = f"What is the citation purpose of {cited_string} in text?"
+                rtn['question'] = f"What is the citation purpose of the text above?"
                 rtn['answer'] = instance['label']
                 rtn = json.dumps(rtn, sort_keys=False)
             
