@@ -85,6 +85,20 @@ class SciDataset(Dataset):
                 part_b = f"{input_string}".replace('\n', ' ')
                 part_a_list.append(part_a)
                 part_b_list.append(part_b)
+        elif self.prompt_name == 'json_logprobs_noisy_channel':
+            for label in self.label_space:
+                rtn = {}
+                # cited_string = input_string[int(instance['citeStart']):int(instance['citeEnd'])]
+                rtn['question'] = f"What is the citation purpose of the text below?"
+                rtn['answer'] = instance['label']
+                rtn['choices'] = self.label_space
+                rtn['text'] = input_string#.replace('\n','')
+                rtn = json.dumps(rtn, sort_keys=False)
+            
+                part_b = f"{input_string}"+'"}'
+                part_a = rtn[:-len(part_b)]
+                part_a_list.append(part_a)
+                part_b_list.append(part_b)
         elif self.prompt_name == 'mcq_style_logprobs':
             for label in self.label_space:
                 part_a = f"Text: {input_string} Q: what is the citation purpose of the text above? Background, result, or method? A: "
