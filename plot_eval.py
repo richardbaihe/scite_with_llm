@@ -52,15 +52,16 @@ def plot_func(data, order, type, color_map, axis_map, temp_name_map):
                 edgecolor ='grey', label =temp_name_map[temp])
         br1 = [x + barWidth for x in br1]
     # Adding Xticks
-    plt.xlabel('Shots', fontweight ='bold', fontsize = 15)
-    plt.ylabel(axis_map[type], fontweight ='bold', fontsize = 15)
+    plt.xlabel('Shots', fontweight ='bold', fontsize = 20)
+    plt.ylabel(axis_map[type], fontweight ='bold', fontsize = 20)
     plt.xticks([r + barWidth for r in range(len(data[order[0]]))],
-            ['0','3','6'])
+            ['0','3','6'],fontsize = 20)
+    plt.yticks(fontsize = 20)
 
-    plt.legend()
-    plt.savefig(type+'.png',dpi=400)
+    plt.legend(fontsize=16)
+    plt.savefig(f'figures/{type}.pdf')
 
-    plt.show()
+    # plt.show()
 
 
 
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     # args = parser.parse_args()
     # compute_scores(args.result_path)
 
-    type = 'r'
+    type = 'f1'
     result_keep = dict()
     temp_set = ['multi_choice_single_line', 'json', 'cloze_style_logprobs', 'json_logprobs']
     for temp in temp_set:
