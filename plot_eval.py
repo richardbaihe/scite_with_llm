@@ -97,7 +97,7 @@ if __name__ == '__main__':
     temp_name_map = {
         'multi_choice_single_line':'MCQ-free-decoding', 
         'json':'JSON-free-decoding', 
-        'cloze_style_logprobs':'MCQ-force-decoding', 
+        'cloze_style_logprobs':'MCQ-force-decoding-calibrated', 
         'json_logprobs':'JSON-force-decoding'
         }
 
